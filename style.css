@@ -1,34 +1,10 @@
 
-/*------------- CONTENTS --------------*/
 
-
-/*------------- HEADER --------------*/
-
-h1 {
-    
-    text-align: center;
-}
-
-#gameInfo {
+.container {
     display: flex;
-    justify-content: space-around;
-}
-
-.timer {
-    padding-left: 500px;
-}
-
-.flips {
-    padding-right: 400px;
-}
-
-
-
-/*------------- CANVAS --------------*/
-
-#myCanvas {
-    display: flex;
-    justify-content: center;
-    background-color: #3f4866;
-}
-
+    flex-wrap: wrap;
+    width: 400px;
+    height: 300px;
+    background-color: brown;
+  }
+  
