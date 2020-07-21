@@ -1,43 +1,30 @@
-# It was my first day
+# ZOMBIE RUN
 
 ## Description
 
-It was my first day is a memory game where the player must to organise a pizzeria food supplies before the pizzaiolo comes. To do this, in front of him will have a number of cards with different symbols representing pizza ingredients that the player have to organise.
-The game ends if the player don’t manage to do this and the kitchen is unorganised when the pizzaoilo comes.
+ZOMBIE RUN is an endless runner 2d videogame in which the player will have to escape from an horde of terrible zombies. To do this, you will be able to jump and dodge them easily, but each seconds they will arrive faster and faster until a moment comes that they will be practically impossible to dodge.
 
+The game ends when the player cannot continue and is caught by the zombies.
 
 ## MVP (DOM - CANVAS)
 
-- Game has a grid with sixteen cards
-- There are 8 different pairs of items
-- There are a timer that marks your time limit
-- You have to resolve the game before the time ends
-- With every new game the cards change positions
+- Game has a splash screen and a Game Over screen
+- The zombies comes to you faster each second
+- The player will be able to jump over the zombies to dodge them.
 
 
 ## Backlog
 
-- Select concrete pieces that you have to look for
-- Ability to select your own dificulty
+- Diferent zombies, flying ones
+- Ability to shoot the zombies
 
 ## Data Structure
-
-# main.js
-
-
-# game.js
-
-
-# cards.js 
-
-
-# grid.js 
+ 
 
 
 
 
 ## States y States Transitions
-Definition of the different states and their transition (transition functions)
 
 - splashScreen
 - gameScreen

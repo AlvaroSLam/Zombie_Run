@@ -1,26 +1,33 @@
 /*
 Player Color: #4a823e
 color enemies: #bf1313
-
 */
 
-const canvas = document.getElementById("game");
-const ctx = canvas.getContext("2d")
+let canvas = document.getElementById("game");
+let ctx = canvas.getContext("2d")
 canvas.style.border = '2px solid black';
 
 //SET OF VARIABLES
 
-let score; //0
+let score; //0 default
 let scoreText;
-let highscore; // 0
+let highscore; // 0 deault
 let highscoreText;
 let player;
-let gravity; //1
+let gravity; //1 default
 let enemies = [];
-let gameSpeed; //3
+let gameSpeed; //3 default
 let keys = {};
+let isGameOver = false; //Con esto finalizamos el loop
+let gameOverScreen;
 
-//EVENT LISTENERS
+//IMAGES
+let bgImg;
+let playerImg;
+let enemyImg;
+
+
+//-----------EVENT LISTENERS--------------//
 document.addEventListener("keydown", function (even) {
   keys[even.code] = true;
 });
@@ -29,7 +36,9 @@ document.addEventListener("keyup", function (even){
   keys[even.code] = false;
 })
 
-// X AXIS, Y AXIS, WIDTH, HEIGHT, COLOUR, DIRECTION Y FORECE
+
+//-----------CLASSES--------------//
+// X AXIS, Y AXIS, WIDTH, HEIGHT, COLOUR, DIRECTION Y FORCE
 class Player {
   constructor (x, y, width, height, colour) {
     this.x = x;
@@ -48,8 +57,7 @@ class Player {
 
     //JUMP MECHANICS DEL PLAYER
     //Para saltar más alto
-    if (keys["Space"]) { //Quitar la tecla W
-      console.log("Jumping");
+    if (keys["Space"]) { 
       this.jump();
     } else {
         this.jumpTimer = 0; //Para saltar más alto o más bajo
@@ -89,7 +97,7 @@ class Player {
     }
 
   
-  draw(){ //CREA EL JUGADOR
+  draw(){ //CREA EL JUGADOR, UN RECTÁNGULO
     ctx.beginPath();
     ctx.fillStyle = this.colour;
     ctx.fillRect(this.x, this.y, this.width, this.height);
@@ -147,7 +155,7 @@ class Statistics {
 }
 
 
-//ALL FUNCTIONS
+//-----------FUNCTIONS--------------//
 function createEnemies(){ //CREATE ENEMIES WITH RANDOM SIZE
   let size = randomRange(20, 70) // Function debajo, el player es 50x50
   let type = randomRange(0, 1); //Dos tipos de enemigos
@@ -160,19 +168,24 @@ function createEnemies(){ //CREATE ENEMIES WITH RANDOM SIZE
 }
 
 
-
 function randomRange(min, max) {
   return Math.round(Math.random() * (max - min) + min);
 }
 
+//Timer enemies
+let initialSpawnTimer = 200;
+let spawnTimer = 100;
+
 //INITIALIZE THE GAME
 
 function startGame(){
+  isGameOver = false
+  console.log("starGame function called")
   //canvas.width = window.innerWidth; //con estas lineas las puedo hacer pantalla completa, recordar quitar
   //canvas.height = window.innerHeight;
 
   //CARACTERÍSTICAS BÁSICAS
-
+  
   ctx.font = "20px sans-serif"; //Probar a ponerlo en Global
   gameSpeed = 3; 
   gravity = 1; 
@@ -180,21 +193,53 @@ function startGame(){
   highscore = 0; 
 
   //DATOS DEL JUGADOR
-  player = new Player(25, canvas.height - 900, 50, 50, "#4a823e " );
+  player = new Player(50, 0, 50, 50, "#4a823e");
 
-  //DATOS DE LOS STATISTICS
-  scoreText = new Statistics("Score: " + score, 25, 25, "left", "#000000")
+  //DATOS DE LOS STATISTICS. Score and Highscore
+  scoreText = new Statistics("Score: " + score, 25, 25, "left", "#000000", "20")
 
+  highscoreText = new Statistics("Highscore: " + highscore, canvas.width - 25, 25, "right", "#000000", "20");
 
 
 
   requestAnimationFrame(update)
+
+  //CREATE A SPLASH SCREEN
   
+   
 }
 
-//Timer enemies
-let initialSpawnTimer = 200;
-let spawnTimer = 100;
+//GAME OVER SCREEN
+
+function gameOver(){
+  canvas.remove() //Lo primero elimina el canvas con element.remove
+  let body = document.querySelector("body") // como no es una variable global la tengo que volver a seleccionar.
+
+  gameOverScreen = document.createElement("div")//Recordar! Tengo la variable creada arriba en global.
+  gameOverScreen.classList.add("gameOverScr")
+  gameOverScreen.innerHTML = `<button class="reset-btn">RESET</button>`;  
+  body.appendChild(gameOverScreen) //Lo añado al body con append.child
+
+  let reset = gameOverScreen.querySelector(".reset-btn")
+  reset.addEventListener("click", function() {
+    newGame(); //Añado una nueva función para que cuando le dé a click se ejecute la nueva función definida abajo
+  })  
+}
+//TERMINAR LA GAME OVER Y CREAR UNA NUEVA
+
+function newGame() {
+  gameOverScreen.remove();
+  
+  let body = document.querySelector("body") //fetch de nuevo el canvas, no es una variable local.
+  canvas = document.createElement("div"); 
+  canvas.innerHTML = `<canvas id="game" width="900" height="500"></canvas>` //Nos crea un nuevo cambas como el anterior
+  body.appendChild(canvas)
+   canvas = document.getElementById("game");
+   ctx = canvas.getContext("2d");
+   canvas.style.border = '2px solid black';
+  
+  startGame();
+}
 
 
 function update() {
@@ -229,17 +274,18 @@ for (let i = 0; i < enemies.length; i ++) {
     player.y < e.y + e.height &&
     player.y + player.height > e.y
     ){
-      //INCLUIR AQUI EL GAME OVER
-      alert("GAME OVER");
+      //INCLUIR AQUI EL GAME OVER      
       enemies = []; //Resetear enemigos
       score = 0; //Resetear el score
       spawnTimer = initialSpawnTimer; //Velocidad original
       gameSpeed = 3; //La velocidad original
+      isGameOver = true
+      gameOver();
       
 
   }
 
-  e.update()
+  if (!isGameOver) e.update()
 }
 
   player.animation();
@@ -249,11 +295,16 @@ for (let i = 0; i < enemies.length; i ++) {
   score ++;
   scoreText.text = "Score: " + score;
   scoreText.draw();
+
+  if (score > highscore) {
+    highscore = score;
+    highscoreText.text = "Highscore: " + highscore;
+  }
+
+  highscoreText.draw();
   
 }
 
 startGame();
-
-
 
 
