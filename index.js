@@ -1,21 +1,23 @@
 /*
-Player Color: #FF5858
+Player Color: #4a823e
+color enemies: #bf1313
 
 */
 
 const canvas = document.getElementById("game");
 const ctx = canvas.getContext("2d")
+canvas.style.border = '2px solid black';
 
 //SET OF VARIABLES
 
-let score;
+let score; //0
 let scoreText;
-let highscore;
+let highscore; // 0
 let highscoreText;
 let player;
-let gravity;
-let obstacles = [];
-let gameSpeed;
+let gravity; //1
+let enemies = [];
+let gameSpeed; //3
 let keys = {};
 
 //EVENT LISTENERS
@@ -37,15 +39,16 @@ class Player {
     this.colour = colour;
     this.dirY = 0; //Maybe I could also use it for the jumping velocity
     this.jumpForce = 15; //remeber to check
-    this.originalHeight = height;
-    this.jumpTimer = 0;
+    this.originalHeight = height; //Only for shrinking the character
+    this.grounded = false;
+    this.jumpTimer = 0; //salto de supermario
   }
 
   animation() {
 
     //JUMP MECHANICS
     //Para saltar más alto
-    if (keys["Space"] || keys["KeyW"]) { //Quitar la tecla W
+    if (keys["Space"]) { //Quitar la tecla W
       console.log("Jumping");
       this.jump();
     } else {
@@ -53,7 +56,7 @@ class Player {
       }
 
       //Para agacharnos
-      if (keys['ShiftLeft'] || keys['KeyS']) {
+      if (keys['KeyS']) {
         this.height = this.originalHeight / 2;
       } else {
         this.height = this.originalHeight;
@@ -86,18 +89,19 @@ class Player {
     }
 
   
-
-
-  draw(){
+  draw(){ //CREA EL JUGADOR
     ctx.beginPath();
-    ctx.fillStyle = this.colour
-    ctx.fillRect(this.x, this.y, this.width, this.height)
+    ctx.fillStyle = this.colour;
+    ctx.fillRect(this.x, this.y, this.width, this.height);
     ctx.closePath();
-  }
-  
+  }  
 }
 
-class Obstacles {
+
+//ENEMIES
+
+
+class Enemy {
   constructor (x, y, width, height, colour) {
     this.x = x;
     this.y = y;
@@ -109,32 +113,33 @@ class Obstacles {
   }
 
   update() {
-    this.x += this.dx;
-    this.Draw();
-    this.dx = -gameSpeed;
+    this.x += this.dirX;
+    this.draw();
+    this.dirX = -gameSpeed;
   }
 
-  Draw () {
+  draw() { //Crea el enemigo
     ctx.beginPath();
-    ctx.fillStyle = this.c;
-    ctx.fillRect(this.x, this.y, this.w, this.h);
+    ctx.fillStyle = this.colour;
+    ctx.fillRect(this.x, this.y, this.width, this.height);
     ctx.closePath();
   }
 }
 
 
 //ALL FUNCTIONS
-function createEnemies(){ //RANDOM SIZE
-  let size = randomRange(20, 70) // Function
-  console.log(size)
-  let type = RandomIntInRange(0, 1);
-  let obstacle = new Obstacle(canvas.width + size, canvas.height - size, size, size, '#2484E4');
+function createEnemies(){ //CREATE ENEMIES WITH RANDOM SIZE
+  let size = randomRange(20, 70) // Function debajo, el player es 50x50
+  let type = randomRange(0, 1); //Dos tipos de enemigos
+  let enemy = new Enemy(canvas.width + size, canvas.height - size, size, size, '#bf1313');
 
   if (type == 1) {
-    obstacle.y -= player.originalHeight - 10;
+    enemy.y -= player.originalHeight - 10; //Para hacerlo un poco más alto que el jugador
   }
-  obstacles.push(obstacle);
+  enemies.push(enemy);
 }
+
+
 
 function randomRange(min, max) {
   return Math.round(Math.random() * (max - min) + min);
@@ -143,26 +148,52 @@ function randomRange(min, max) {
 //INITIALIZE THE GAME
 
 function startGame(){
-  canvas.width = window.innerWidth;
-  canvas.height = window.innerHeight;
+  //canvas.width = window.innerWidth; //con estas lineas las puedo hacer pantalla completa, recordar quitar
+  //canvas.height = window.innerHeight;
+
+  //CARACTERÍSTICAS BÁSICAS
 
   ctx.font = "20px sans-serif"; //Probar a ponerlo en Global
-  gameSpeed = 3; //Probar a ponerlo directamente en las variables de arriba
-  gravity = 1; //Probar a ponerlo directamente en las variables de arriba
-  score = 0; //Probar a ponerlo directamente en las variables de arriba
-  highscore = 0; //Probar a ponerlo directamente en las variables de arriba
+  gameSpeed = 3; 
+  gravity = 1; 
+  score = 0; 
+  highscore = 0; 
 
-  player = new Player(25, canvas.height - 900, 50, 50, "#FF5858" )
-  //AQUI ESTÁN LOS DATOS DEL JUGADOR, PROBAR A PONERLOS EN VARIABLE
+  player = new Player(25, canvas.height - 900, 50, 50, "#4a823e " )
+  //DATOS DEL JUGADOR
   requestAnimationFrame(update)
   
 }
+
+//Timer enemies
+let initialSpawnTimer = 200;
+let spawnTimer = 100;
+
 
 function update() {
   requestAnimationFrame(update);
   ctx.clearRect(0, 0, canvas.width, canvas.height) //Clear the canvas every time, si no todo se quedará
 
+  //SPAWING ENEMIES
+spawnTimer--;
+if (spawnTimer <= 0) {
+  createEnemies();
+  spawnTimer = initialSpawnTimer - gameSpeed * 8; //for comming
+
+  if (spawnTimer < 60) {
+    spawnTimer = 60;
+  }
+}
+
+for (let i = 0; i < enemies.length; i ++) { //Crea los enemigos
+  let e = enemies[i];
+
+  e.update()
+}
+
   player.animation();
+
+  gameSpeed += 0.003; // Increase every frame hasta llegar a 60 del spawnTimer
   
 }
 
