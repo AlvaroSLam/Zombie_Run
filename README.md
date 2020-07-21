@@ -22,8 +22,6 @@ The game ends when the player cannot continue and is caught by the zombies.
  
 
 
-
-
 ## States y States Transitions
 
 - splashScreen

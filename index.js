@@ -193,7 +193,7 @@ function startGame(){
   highscore = 0; 
 
   //DATOS DEL JUGADOR
-  player = new Player(50, 0, 50, 50, "#4a823e");
+  player = new Player(50, canvas.height - 150, 50, 50, "#4a823e");
 
   //DATOS DE LOS STATISTICS. Score and Highscore
   scoreText = new Statistics("Score: " + score, 25, 25, "left", "#000000", "20")
@@ -250,7 +250,7 @@ function update() {
 spawnTimer--;
 if (spawnTimer <= 0) {
   createEnemies();
-  spawnTimer = initialSpawnTimer - gameSpeed * 8; //for comming
+  spawnTimer = initialSpawnTimer - gameSpeed * 15; //Esto hace que aparezcan más seguido
 
   if (spawnTimer < 60) {
     spawnTimer = 60;
@@ -290,7 +290,7 @@ for (let i = 0; i < enemies.length; i ++) {
 
   player.animation();
 
-  gameSpeed += 0.003; // Increase every frame hasta llegar a 60 del spawnTimer
+  gameSpeed += 0.005; // Increase every frame hasta llegar a 60 del spawnTimer
 
   score ++;
   scoreText.text = "Score: " + score;
