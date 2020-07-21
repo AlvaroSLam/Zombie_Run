@@ -46,7 +46,7 @@ class Player {
 
   animation() {
 
-    //JUMP MECHANICS
+    //JUMP MECHANICS DEL PLAYER
     //Para saltar más alto
     if (keys["Space"]) { //Quitar la tecla W
       console.log("Jumping");
@@ -99,8 +99,6 @@ class Player {
 
 
 //ENEMIES
-
-
 class Enemy {
   constructor (x, y, width, height, colour) {
     this.x = x;
@@ -122,6 +120,28 @@ class Enemy {
     ctx.beginPath();
     ctx.fillStyle = this.colour;
     ctx.fillRect(this.x, this.y, this.width, this.height);
+    ctx.closePath();
+  }
+}
+
+
+//SCORE
+class Statistics {
+  constructor(text, x, y, alignment, colour, size) {
+    this.text = text;
+    this.x = x;
+    this.y = y;
+    this.alignment = alignment;
+    this.colour = colour;
+    this.size = size;
+  }
+
+  draw() {
+    ctx.beginPath();
+    ctx.fillStyle = this.colour;
+    ctx.font = this.size +"px sans-serif";
+    ctx.textAlign = this.alignment
+    ctx.fillText(this.text, this.x, this.y);
     ctx.closePath();
   }
 }
@@ -159,8 +179,15 @@ function startGame(){
   score = 0; 
   highscore = 0; 
 
-  player = new Player(25, canvas.height - 900, 50, 50, "#4a823e " )
   //DATOS DEL JUGADOR
+  player = new Player(25, canvas.height - 900, 50, 50, "#4a823e " );
+
+  //DATOS DE LOS STATISTICS
+  scoreText = new Statistics("Score: " + score, 25, 25, "left", "#000000")
+
+
+
+
   requestAnimationFrame(update)
   
 }
@@ -185,8 +212,32 @@ if (spawnTimer <= 0) {
   }
 }
 
-for (let i = 0; i < enemies.length; i ++) { //Crea los enemigos
+//CREACIÓN DE ENEMIGOS
+for (let i = 0; i < enemies.length; i ++) { 
   let e = enemies[i];
+
+  //COLLISION SYSTEM
+  //IMPORTANTE!! Eliminar los enemigos que salgan de la pantalla
+  if (e.x + e.width < 0) {
+    enemies.splice(i, 1);
+  }
+
+  //COLLISION
+  if (
+    player.x < e.x + e.width && 
+    player.x + player.width > e.x &&
+    player.y < e.y + e.height &&
+    player.y + player.height > e.y
+    ){
+      //INCLUIR AQUI EL GAME OVER
+      alert("GAME OVER");
+      enemies = []; //Resetear enemigos
+      score = 0; //Resetear el score
+      spawnTimer = initialSpawnTimer; //Velocidad original
+      gameSpeed = 3; //La velocidad original
+      
+
+  }
 
   e.update()
 }
@@ -194,6 +245,10 @@ for (let i = 0; i < enemies.length; i ++) { //Crea los enemigos
   player.animation();
 
   gameSpeed += 0.003; // Increase every frame hasta llegar a 60 del spawnTimer
+
+  score ++;
+  scoreText.text = "Score: " + score;
+  scoreText.draw();
   
 }
 
