@@ -3,9 +3,12 @@ Player Color: #4a823e
 color enemies: #bf1313
 */
 
-let canvas = document.getElementById("game");
-let ctx = canvas.getContext("2d")
-canvas.style.border = '2px solid black'; //ATTENTION! Quitar después del arte final
+//let canvas = document.getElementById("game");
+//let ctx = canvas.getContext("2d")
+let body = document.querySelector("body")
+let canvas;
+let ctx;
+//canvas.style.border = '2px solid black'; //ATTENTION! Quitar después del arte final
 
 //SET OF VARIABLES
 
@@ -20,9 +23,11 @@ let gameSpeed; //3 default
 let keys = {};
 let isGameOver = false; //Con esto finalizamos el loop
 let gameOverScreen;
+let splashScreen;
+let canvasContainer;
 
 //IMAGES
-let bgImg;
+
 let playerImg = new Image();
 playerImg.src = "images/player.png";
 
@@ -167,7 +172,7 @@ class Statistics {
 
 //-----------FUNCTIONS--------------//
 function createEnemies(){ //CREATE ENEMIES WITH RANDOM SIZE
-  let size = randomRange(20, 70) // Function debajo, el player es 50x50
+  let size = randomRange(90, 120) // Function debajo, el player es 60x80
   let type = randomRange(0, 1); //Dos tipos de enemigos
   let enemy = new Enemy(canvas.width + size, canvas.height - size, size, size, '#bf1313');
 
@@ -188,8 +193,35 @@ let spawnTimer = 100;
 
 //INITIALIZE THE GAME
 
+//SPLASH SCREEN
+
+function splash(){
+  let body = document.querySelector("body")
+  splashScreen = document.createElement("div")
+  splashScreen.classList.add("splashScr")
+  splashScreen.innerHTML = `<button class="start-btn">START GAME</button>`;
+  body.appendChild(splashScreen)
+  console.log("hello")
+  let splashBtn = splashScreen.querySelector(".start-btn")
+  splashBtn.addEventListener("click", function() {
+      startGame();
+    })
+
+}
+
+function addCanvas() {
+  canvasContainer = document.createElement("div")
+  canvasContainer.setAttribute("id", "canvas-container")
+  canvasContainer.innerHTML = `<canvas id="game" width="1200" height="700"></canvas>`
+  body.appendChild(canvasContainer)
+}
+
 function startGame(){
   isGameOver = false
+  splashScreen.remove()
+  addCanvas()
+  canvas = document.getElementById("game");
+  ctx = canvas.getContext("2d")
   console.log("starGame function called")
   //canvas.width = window.innerWidth; //con estas lineas las puedo hacer pantalla completa, recordar quitar
   //canvas.height = window.innerHeight;
@@ -203,36 +235,40 @@ function startGame(){
   highscore = 0; 
 
   //DATOS DEL JUGADOR
-  player = new Player(50, canvas.height, 70, 70, "#4a823e");
+  player = new Player(50, canvas.height, 60, 80, "#4a823e");
 
   //DATOS DE LOS STATISTICS. Score and Highscore
-  scoreText = new Statistics("Score: " + score, 25, 25, "left", "#000000", "20")
+  scoreText = new Statistics("Score: " + score, 25, 25, "left", "#bababa", "30")
 
-  highscoreText = new Statistics("Highscore: " + highscore, canvas.width - 25, 25, "right", "#000000", "20");
+  highscoreText = new Statistics("Highscore: " + highscore, canvas.width - 25, 25, "right", "#bababa", "30");
 
 
 
   requestAnimationFrame(updateGame)
 
-  //CREATE A SPLASH SCREEN
-  
-   
+     
 }
 
 //GAME OVER SCREEN
 
 function gameOver(){
-  canvas.remove() //Lo primero elimina el canvas con element.remove
+  //canvas.remove() //Lo primero elimina el canvas con element.remove
+  canvasContainer.remove();
   let body = document.querySelector("body") // como no es una variable global la tengo que volver a seleccionar.
 
   gameOverScreen = document.createElement("div")//Recordar! Tengo la variable creada arriba en global.
   gameOverScreen.classList.add("gameOverScr")
-  gameOverScreen.innerHTML = `<button class="reset-btn">RESET</button>`;  
+  gameOverScreen.innerHTML = `
+  <button class="reset-btn">RESET</button>
+  <h3>${score}</h3>
+  `;  
   body.appendChild(gameOverScreen) //Lo añado al body con append.child
 
   let reset = gameOverScreen.querySelector(".reset-btn")
   reset.addEventListener("click", function() {
-    newGame(); //Añado una nueva función para que cuando le dé a click se ejecute la nueva función definida abajo
+    //canvasContainer.remove();
+    newGame();
+     //Añado una nueva función para que cuando le dé a click se ejecute la nueva función definida abajo
   })  
 }
 //TERMINAR LA GAME OVER Y CREAR UNA NUEVA
@@ -241,16 +277,18 @@ function newGame() {
   gameOverScreen.remove();
   
   let body = document.querySelector("body") //fetch de nuevo el canvas, no es una variable local.
-  canvas = document.createElement("div"); 
-  canvas.innerHTML = `<canvas id="game" width="900" height="500"></canvas>` //Nos crea un nuevo cambas como el anterior
-  body.appendChild(canvas)
-   canvas = document.getElementById("game");
-   ctx = canvas.getContext("2d");
-   canvas.style.border = '2px solid black';
+  //canvas = document.createElement("div"); 
+  //canvas.innerHTML = `<canvas id="game" width="1200" height="700" ></canvas>` /
+ // addCanvas()
+  //Nos crea un nuevo cambas como el anterior
+  //body.appendChild(canvas)
+  // canvas = document.getElementById("game");
+  // ctx = canvas.getContext("2d");
+  // canvas.style.border = '2px solid black';
   
-    score = 0; //0 default
+    //score = 0; //0 default
     //scoreText;
-    highscore = 0; // 0 deault
+    //highscore = 0; // 0 deault
     highscoreText;
     //player;
     gravity = 1; //1 default
@@ -301,7 +339,7 @@ for (let i = 0; i < enemies.length; i ++) {
     ){
       //INCLUIR AQUI EL GAME OVER      
       enemies = []; //Resetear enemigos
-      score = 0; //Resetear el score
+      //score = 0; //Resetear el score
       spawnTimer = initialSpawnTimer; //Velocidad original
       gameSpeed = 3; //La velocidad original
       isGameOver = true
@@ -330,6 +368,8 @@ for (let i = 0; i < enemies.length; i ++) {
   if (!isGameOver) requestAnimationFrame(updateGame)
 }
 
-startGame();
+//startGame();
+
+window.addEventListener("load", splash)
 
 
