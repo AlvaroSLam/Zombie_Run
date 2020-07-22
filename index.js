@@ -199,7 +199,10 @@ function splash(){
   let body = document.querySelector("body")
   splashScreen = document.createElement("div")
   splashScreen.classList.add("splashScr")
-  splashScreen.innerHTML = `<button class="start-btn">START GAME</button>`;
+  splashScreen.innerHTML = `
+    <button class="start-btn">START GAME</button>
+    <img src="images/zombie.hand.png" alt="Start" id="hand">
+  `;
   body.appendChild(splashScreen)
   console.log("hello")
   let splashBtn = splashScreen.querySelector(".start-btn")
@@ -260,7 +263,12 @@ function gameOver(){
   gameOverScreen.classList.add("gameOverScr")
   gameOverScreen.innerHTML = `
   <button class="reset-btn">RESET</button>
+  <div class="score">
+  <h2>Your Score</h2>
   <h3>${score}</h3>
+  <h2><em>I like my zombies slow and I like my zombies stupid.</em></h2>
+  <h3>Seth Grahame-Smith</h3>
+  </div>
   `;  
   body.appendChild(gameOverScreen) //Lo añado al body con append.child
 
