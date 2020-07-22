@@ -5,7 +5,7 @@ color enemies: #bf1313
 
 let canvas = document.getElementById("game");
 let ctx = canvas.getContext("2d")
-canvas.style.border = '2px solid black';
+canvas.style.border = '2px solid black'; //ATTENTION! Quitar después del arte final
 
 //SET OF VARIABLES
 
@@ -23,8 +23,12 @@ let gameOverScreen;
 
 //IMAGES
 let bgImg;
-let playerImg;
-let enemyImg;
+let playerImg = new Image();
+playerImg.src = "images/player.png";
+
+let enemyImg = new Image();
+enemyImg.src = "images/zombie1.png"
+
 
 
 //-----------EVENT LISTENERS--------------//
@@ -45,7 +49,7 @@ class Player {
     this.y = y;
     this.width = width;
     this.height = height;
-    this.colour = colour;
+    this.colour = colour; // YA NO ES NECESARIO
     this.dirY = 0; //Maybe I could also use it for the jumping velocity
     this.jumpForce = 15; //remeber to check
     this.originalHeight = height; //Only for shrinking the character
@@ -96,14 +100,18 @@ class Player {
       }
     }
 
+    draw(){ //CREA EL JUGADOR
+      ctx.drawImage(playerImg, this.x, this.y, this.width, this.height)
+    } 
+
   
-  draw(){ //CREA EL JUGADOR, UN RECTÁNGULO
+  /* CODIGO ANTIGUO PARA EL CUADRADO draw(){ //CREA EL JUGADOR, UN RECTÁNGULO
     ctx.beginPath();
     ctx.fillStyle = this.colour;
     ctx.fillRect(this.x, this.y, this.width, this.height);
-    ctx.closePath();
+    ctx.closePath();*/
   }  
-}
+
 
 
 //ENEMIES
@@ -125,11 +133,13 @@ class Enemy {
   }
 
   draw() { //Crea el enemigo
-    ctx.beginPath();
+    ctx.drawImage(enemyImg, this.x, this.y, this.width, this.height)
+  }
+
+  /* CODIGO ANTIGUO Para los rectángulos. ctx.beginPath();
     ctx.fillStyle = this.colour;
     ctx.fillRect(this.x, this.y, this.width, this.height);
-    ctx.closePath();
-  }
+    ctx.closePath();*/
 }
 
 
@@ -193,7 +203,7 @@ function startGame(){
   highscore = 0; 
 
   //DATOS DEL JUGADOR
-  player = new Player(50, canvas.height - 150, 50, 50, "#4a823e");
+  player = new Player(50, canvas.height, 70, 70, "#4a823e");
 
   //DATOS DE LOS STATISTICS. Score and Highscore
   scoreText = new Statistics("Score: " + score, 25, 25, "left", "#000000", "20")
@@ -202,7 +212,7 @@ function startGame(){
 
 
 
-  requestAnimationFrame(update)
+  requestAnimationFrame(updateGame)
 
   //CREATE A SPLASH SCREEN
   
@@ -238,24 +248,39 @@ function newGame() {
    ctx = canvas.getContext("2d");
    canvas.style.border = '2px solid black';
   
+    score = 0; //0 default
+    //scoreText;
+    highscore = 0; // 0 deault
+    highscoreText;
+    //player;
+    gravity = 1; //1 default
+    enemies = [];
+    gameSpeed = 3; //3 default
+    keys = {};
+    isGameOver = false; //Con esto finalizamos el loop
+    initialSpawnTimer = 200;
+    spawnTimer = 100;
+    //gameOverScreen;
+
   startGame();
 }
 
 
-function update() {
-  requestAnimationFrame(update);
+function updateGame() {
+  //requestAnimationFrame(update);
+  //if (!isGameOver) requestAnimationFrame(updateGame)
   ctx.clearRect(0, 0, canvas.width, canvas.height) //Clear the canvas every time, si no todo se quedará
 
   //SPAWING ENEMIES
-spawnTimer--;
-if (spawnTimer <= 0) {
-  createEnemies();
-  spawnTimer = initialSpawnTimer - gameSpeed * 15; //Esto hace que aparezcan más seguido
-
-  if (spawnTimer < 60) {
-    spawnTimer = 60;
+  spawnTimer--;
+  if (spawnTimer <= 0) {
+    createEnemies();
+    spawnTimer = initialSpawnTimer - gameSpeed * 15; //Esto hace que aparezcan más seguido
+    console.log(gameSpeed)
+    if (spawnTimer < 60) {
+      spawnTimer = 60;
+    }
   }
-}
 
 //CREACIÓN DE ENEMIGOS
 for (let i = 0; i < enemies.length; i ++) { 
@@ -282,10 +307,10 @@ for (let i = 0; i < enemies.length; i ++) {
       isGameOver = true
       gameOver();
       
-
   }
 
   if (!isGameOver) e.update()
+  console.log("game continues")
 }
 
   player.animation();
@@ -302,7 +327,7 @@ for (let i = 0; i < enemies.length; i ++) {
   }
 
   highscoreText.draw();
-  
+  if (!isGameOver) requestAnimationFrame(updateGame)
 }
 
 startGame();
