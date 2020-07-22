@@ -8,9 +8,10 @@ The game ends when the player cannot continue and is caught by the zombies.
 
 ## MVP (DOM - CANVAS)
 
-- Game has a splash screen and a Game Over screen
-- The zombies comes to you faster each second
+- Game has a splash screen and a Game Over screen.
+- The zombies comes to you faster each second.
 - The player will be able to jump over the zombies to dodge them.
+- The player have two jumps heights. With one touch, will jump a shorter distance, and maintaining pressed will jump higher.
 
 
 ## Backlog
