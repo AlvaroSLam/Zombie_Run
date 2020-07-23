@@ -177,7 +177,7 @@ class Statistics {
 
 
 function createEnemies(){ //CREATE ENEMIES WITH RANDOM SIZE
-  let size = randomRange(50, 160) // Function debajo, el player es 60x80
+  let size = randomRange(50, 150) // Function debajo, el player es 60x80
   let type = randomRange(0, 1); //Two types of enemies: 0 -> ground / 1 -> fly
   let enemy = new Enemy(canvas.width + size, canvas.height - size, size, size, '#bf1313');
 
