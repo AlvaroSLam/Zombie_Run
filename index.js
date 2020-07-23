@@ -34,7 +34,19 @@ playerImg.src = "images/player.png";
 let enemyImg = new Image();
 enemyImg.src = "images/zombie1.png"
 
+//MUSIC
+//let splashScreenMusic = document.getElementById("splashScreenMusic")
+//let gameMusic = document.getElementById("gameMusic")
+//let endGame = document.getElementById("endGame")
 
+let splashScreenMusic = new Audio();
+splashScreenMusic.src = "music/TLOU.song.mp3"
+
+let gameMusic = new Audio();
+gameMusic.src = "music/game.music.mp3"
+
+let endGame = new Audio();
+endGame.src = "music/end.game.mp3"
 
 //-----------EVENT LISTENERS--------------//
 document.addEventListener("keydown", function (even) {
@@ -171,6 +183,9 @@ class Statistics {
 
 
 //-----------FUNCTIONS--------------//
+
+
+
 function createEnemies(){ //CREATE ENEMIES WITH RANDOM SIZE
   let size = randomRange(90, 120) // Function debajo, el player es 60x80
   let type = randomRange(0, 1); //Dos tipos de enemigos
@@ -198,6 +213,8 @@ let spawnTimer = 100;
 function splash(){
   let body = document.querySelector("body")
   splashScreen = document.createElement("div")
+  splashScreenMusic.play();
+  splashScreenMusic.volume = 0.05
   splashScreen.classList.add("splashScr")
   splashScreen.innerHTML = `
     <button class="start-btn">START GAME</button> 
@@ -207,9 +224,12 @@ function splash(){
   body.appendChild(splashScreen)
   let splashBtn = splashScreen.querySelector(".start-btn")
   splashBtn.addEventListener("click", function() {
+      splashScreenMusic.pause();
+      splashScreen.currentTime = 0
+      gameMusic.play()
+      gameMusic.volume = 0.05
       startGame();
     })
-
 }
 
 function addCanvas() {
@@ -256,6 +276,9 @@ function startGame(){
 
 function gameOver(){
   //canvas.remove() //Lo primero elimina el canvas con element.remove
+  endGame.currentTime = 0
+  endGame.play();
+  endGame.volume = 0.05;
   canvasContainer.remove();
   let body = document.querySelector("body") // como no es una variable global la tengo que volver a seleccionar.
 
@@ -278,6 +301,7 @@ function gameOver(){
   let reset = gameOverScreen.querySelector(".reset-btn")
   reset.addEventListener("click", function() {
     //canvasContainer.remove();
+    gameMusic.play()
     newGame();
      //Añado una nueva función para que cuando le dé a click se ejecute la nueva función definida abajo
   })  
@@ -348,7 +372,9 @@ for (let i = 0; i < enemies.length; i ++) {
     player.y < e.y + e.height &&
     player.y + player.height > e.y
     ){
-      //INCLUIR AQUI EL GAME OVER      
+      //INCLUIR AQUI EL GAME OVER
+      gameMusic.pause()    
+      gameMusic.currentTime = 0  
       enemies = []; //Resetear enemigos
       //score = 0; //Resetear el score
       spawnTimer = initialSpawnTimer; //Velocidad original
@@ -375,7 +401,7 @@ for (let i = 0; i < enemies.length; i ++) {
     highscoreText.text = "Highscore: " + highscore;
   }
 
-  highscoreText.draw();
+  //highscoreText.draw();
   if (!isGameOver) requestAnimationFrame(updateGame)
 }
 
