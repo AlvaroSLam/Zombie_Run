@@ -218,7 +218,8 @@ function splash(){
   splashScreen.classList.add("splashScr")
   splashScreen.innerHTML = `
     <button class="start-btn">START GAME</button> 
-    <h2 class= "headline"> Are you faster than a zombie? </h2>       
+    <h2 class= "headline">Are you faster than a zombie? </h2>
+    <h2 class= "instruccions">Press the space bar to jump and the S to duck</h2>           
     <img src="images/zombie.hand.png" alt="Start" class="hand">
   `
   body.appendChild(splashScreen)
