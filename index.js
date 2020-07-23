@@ -200,11 +200,11 @@ function splash(){
   splashScreen = document.createElement("div")
   splashScreen.classList.add("splashScr")
   splashScreen.innerHTML = `
-    <button class="start-btn">START GAME</button>
-    <img src="images/zombie.hand.png" alt="Start" id="hand">
-  `;
+    <button class="start-btn">START GAME</button> 
+    <h2 class= "headline"> Are you faster than a zombie? </h2>       
+    <img src="images/zombie.hand.png" alt="Start" class="hand">
+  `
   body.appendChild(splashScreen)
-  console.log("hello")
   let splashBtn = splashScreen.querySelector(".start-btn")
   splashBtn.addEventListener("click", function() {
       startGame();
@@ -264,10 +264,13 @@ function gameOver(){
   gameOverScreen.innerHTML = `
   <button class="reset-btn">RESET</button>
   <div class="score">
-  <h2>Your Score</h2>
-  <h3>${score}</h3>
-  <h2><em>I like my zombies slow and I like my zombies stupid.</em></h2>
-  <h3>Seth Grahame-Smith</h3>
+
+  <h2 class = "scoreText">Your Score</h2>
+  <h3 class= "scoreNum">${score}</h3>
+
+  <h2 class= "quote"><em>"I like my zombies slow and I like my zombies stupid"</em></h2>
+  <h3 class="author">Seth Grahame-Smith</h3>
+  <h3 class="authorText"><em>Author of Pride and Prejudice and Zombies</em></h3>
   </div>
   `;  
   body.appendChild(gameOverScreen) //Lo añado al body con append.child
@@ -321,10 +324,10 @@ function updateGame() {
   spawnTimer--;
   if (spawnTimer <= 0) {
     createEnemies();
-    spawnTimer = initialSpawnTimer - gameSpeed * 15; //Esto hace que aparezcan más seguido
+    spawnTimer = initialSpawnTimer - gameSpeed * 20; //Esto hace que aparezcan más seguido
     console.log(gameSpeed)
-    if (spawnTimer < 60) {
-      spawnTimer = 60;
+    if (spawnTimer < 100) {
+      spawnTimer = 100;
     }
   }
 
