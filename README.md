@@ -1,4 +1,4 @@
-# ZOMBIE RUN
+# ZOMBIE RUN!
 
 ## Description
 
@@ -103,4 +103,4 @@ function updateGame(){}
 
 
 ### Slides
-[Link Slides.com]
+[Link Slides.com] https://docs.google.com/presentation/d/1-2ztiUcwwJexJtH--gI8dNlfFc-uW5S9ar6UECuFu7g/edit?usp=sharing

@@ -1,14 +1,9 @@
-/*
-Player Color: #4a823e
-color enemies: #bf1313
-*/
 
 //let canvas = document.getElementById("game");
 //let ctx = canvas.getContext("2d")
 let body = document.querySelector("body")
 let canvas;
 let ctx;
-//canvas.style.border = '2px solid black'; //ATTENTION! Quitar después del arte final
 
 //SET OF VARIABLES
 
@@ -21,7 +16,7 @@ let gravity; //1 default
 let enemies = [];
 let gameSpeed; //3 default
 let keys = {};
-let isGameOver = false; //Con esto finalizamos el loop
+let isGameOver = false; //To end the for loop
 let gameOverScreen;
 let splashScreen;
 let canvasContainer;
@@ -35,9 +30,6 @@ let enemyImg = new Image();
 enemyImg.src = "images/zombie1.png"
 
 //MUSIC
-//let splashScreenMusic = document.getElementById("splashScreenMusic")
-//let gameMusic = document.getElementById("gameMusic")
-//let endGame = document.getElementById("endGame")
 
 let splashScreenMusic = new Audio();
 splashScreenMusic.src = "music/TLOU.song.mp3"
@@ -66,25 +58,24 @@ class Player {
     this.y = y;
     this.width = width;
     this.height = height;
-    this.colour = colour; // YA NO ES NECESARIO
-    this.dirY = 0; //Maybe I could also use it for the jumping velocity
-    this.jumpForce = 15; //remeber to check
+    this.colour = colour; // Only necessary if the player is a square
+    this.dirY = 0; 
+    this.jumpForce = 15; 
     this.originalHeight = height; //Only for shrinking the character
     this.grounded = false;
-    this.jumpTimer = 0; //salto de supermario
+    this.jumpTimer = 0;
   }
 
   animation() {
 
     //JUMP MECHANICS DEL PLAYER
-    //Para saltar más alto
     if (keys["Space"]) { 
       this.jump();
     } else {
-        this.jumpTimer = 0; //Para saltar más alto o más bajo
+        this.jumpTimer = 0;
       }
 
-      //Para agacharnos
+      //DUCK MECHANICS
       if (keys['KeyS']) {
         this.height = this.originalHeight / 2;
       } else {
@@ -93,7 +84,7 @@ class Player {
     
       this.y += this.dirY;
 
-    //GRAVITY SISTEM. StackOverFlow
+    //GRAVITY SISTEM.
     if (this.y + this.height < canvas.height) {
       this.dirY += gravity;
       this.grounded = false;
@@ -106,7 +97,6 @@ class Player {
     this.draw()
   }
 
-  //JUMP MECHANICS
   jump() {
     if (this.grounded && this.jumpTimer === 0) {
       this.jumpTimer = 1;
@@ -117,12 +107,12 @@ class Player {
       }
     }
 
-    draw(){ //CREA EL JUGADOR
+    draw(){ //PLAYER SPRITE
       ctx.drawImage(playerImg, this.x, this.y, this.width, this.height)
     } 
 
   
-  /* CODIGO ANTIGUO PARA EL CUADRADO draw(){ //CREA EL JUGADOR, UN RECTÁNGULO
+  /* PLAYER SQUARE OLD CODE: draw(){
     ctx.beginPath();
     ctx.fillStyle = this.colour;
     ctx.fillRect(this.x, this.y, this.width, this.height);
@@ -153,10 +143,10 @@ class Enemy {
     ctx.drawImage(enemyImg, this.x, this.y, this.width, this.height)
   }
 
-  /* CODIGO ANTIGUO Para los rectángulos. ctx.beginPath();
+  /* OLD CODE FOR MAKING THE ENEMIES AS RECTANGLES. draw() {ctx.beginPath();
     ctx.fillStyle = this.colour;
     ctx.fillRect(this.x, this.y, this.width, this.height);
-    ctx.closePath();*/
+    ctx.closePath();}*/
 }
 
 
@@ -187,26 +177,26 @@ class Statistics {
 
 
 function createEnemies(){ //CREATE ENEMIES WITH RANDOM SIZE
-  let size = randomRange(90, 120) // Function debajo, el player es 60x80
-  let type = randomRange(0, 1); //Dos tipos de enemigos
+  let size = randomRange(50, 160) // Function debajo, el player es 60x80
+  let type = randomRange(0, 1); //Two types of enemies: 0 -> ground / 1 -> fly
   let enemy = new Enemy(canvas.width + size, canvas.height - size, size, size, '#bf1313');
 
   if (type == 1) {
-    enemy.y -= player.originalHeight - 10; //Para hacerlo un poco más alto que el jugador
+    enemy.y -= player.originalHeight - 10; //To make them slighter bigger than the player
   }
   enemies.push(enemy);
 }
 
 
-function randomRange(min, max) {
+function randomRange(min, max) { //CREATE RANDOM SIZES ENEMIES
   return Math.round(Math.random() * (max - min) + min);
 }
 
 //Timer enemies
 let initialSpawnTimer = 200;
-let spawnTimer = 100;
+let spawnTimer = initialSpawnTimer;
 
-//INITIALIZE THE GAME
+
 
 //SPLASH SCREEN
 
@@ -240,6 +230,7 @@ function addCanvas() {
   body.appendChild(canvasContainer)
 }
 
+//START THE GAME
 function startGame(){
   isGameOver = false
   splashScreen.remove()
@@ -247,18 +238,18 @@ function startGame(){
   canvas = document.getElementById("game");
   ctx = canvas.getContext("2d")
   console.log("starGame function called")
-  //canvas.width = window.innerWidth; //con estas lineas las puedo hacer pantalla completa, recordar quitar
+  //TO MAKE THE CANVAS FULL SCREEN DO THIS
+  //canvas.width = window.innerWidth; 
   //canvas.height = window.innerHeight;
 
-  //CARACTERÍSTICAS BÁSICAS
-  
-  ctx.font = "20px sans-serif"; //Probar a ponerlo en Global
+  //BASIC CHARACTERISTICS  
+  ctx.font = "20px sans-serif"; 
   gameSpeed = 3; 
   gravity = 1; 
   score = 0; 
   highscore = 0; 
 
-  //DATOS DEL JUGADOR
+  //PLAYER DATA
   player = new Player(50, canvas.height, 60, 90, "#4a823e");
 
   //DATOS DE LOS STATISTICS. Score and Highscore
@@ -266,24 +257,20 @@ function startGame(){
 
   highscoreText = new Statistics("Highscore: " + highscore, canvas.width - 25, 25, "right", "#bababa", "30");
 
-
-
-  requestAnimationFrame(updateGame)
-
-     
+  requestAnimationFrame(updateGame)     
 }
 
 //GAME OVER SCREEN
 
 function gameOver(){
-  //canvas.remove() //Lo primero elimina el canvas con element.remove
+  //canvas.remove() //First step removing the canvas with element.remove
   endGame.currentTime = 0
   endGame.play();
   endGame.volume = 0.05;
   canvasContainer.remove();
-  let body = document.querySelector("body") // como no es una variable global la tengo que volver a seleccionar.
+  let body = document.querySelector("body") //I have to fetch it because is not a global variable
 
-  gameOverScreen = document.createElement("div")//Recordar! Tengo la variable creada arriba en global.
+  gameOverScreen = document.createElement("div")//IMPORTANT! I already have the variable created as global.
   gameOverScreen.classList.add("gameOverScr")
   gameOverScreen.innerHTML = `
   <button class="reset-btn">RESET</button>
@@ -297,22 +284,21 @@ function gameOver(){
   <h3 class="authorText"><em>Author of Pride and Prejudice and Zombies<em></h3>
   </div>
   `;  
-  body.appendChild(gameOverScreen) //Lo añado al body con append.child
+  body.appendChild(gameOverScreen) //Added to the body with append.child
 
   let reset = gameOverScreen.querySelector(".reset-btn")
   reset.addEventListener("click", function() {
     //canvasContainer.remove();
     gameMusic.play()
     newGame();
-     //Añado una nueva función para que cuando le dé a click se ejecute la nueva función definida abajo
+     //Add here the function so when I click the button the next function will execute.
   })  
 }
-//TERMINAR LA GAME OVER Y CREAR UNA NUEVA
 
-function newGame() {
+function newGame() { //Finish the game over phase and start a new game
   gameOverScreen.remove();
   
-  let body = document.querySelector("body") //fetch de nuevo el canvas, no es una variable local.
+  let body = document.querySelector("body") //fetch again because is not a global varaible.
   //canvas = document.createElement("div"); 
   //canvas.innerHTML = `<canvas id="game" width="1200" height="700" ></canvas>` /
  // addCanvas()
@@ -343,13 +329,13 @@ function newGame() {
 function updateGame() {
   //requestAnimationFrame(update);
   //if (!isGameOver) requestAnimationFrame(updateGame)
-  ctx.clearRect(0, 0, canvas.width, canvas.height) //Clear the canvas every time, si no todo se quedará
+  ctx.clearRect(0, 0, canvas.width, canvas.height) //Clear the canvas every time, if not everything will appear again.
 
   //SPAWING ENEMIES
   spawnTimer--;
   if (spawnTimer <= 0) {
     createEnemies();
-    spawnTimer = initialSpawnTimer - gameSpeed * 20; //Esto hace que aparezcan más seguido
+    spawnTimer = initialSpawnTimer - gameSpeed * 50; //The enemies will appear closer together 
     console.log(gameSpeed)
     if (spawnTimer < 100) {
       spawnTimer = 100;
@@ -361,7 +347,7 @@ for (let i = 0; i < enemies.length; i ++) {
   let e = enemies[i];
 
   //COLLISION SYSTEM
-  //IMPORTANTE!! Eliminar los enemigos que salgan de la pantalla
+  //IMPORTANT!! Delete the enemies when they disappear from the canvas screen
   if (e.x + e.width < 0) {
     enemies.splice(i, 1);
   }
@@ -373,13 +359,13 @@ for (let i = 0; i < enemies.length; i ++) {
     player.y < e.y + e.height &&
     player.y + player.height > e.y
     ){
-      //INCLUIR AQUI EL GAME OVER
+      //INCLUDE HERE THE GAME OVER
       gameMusic.pause()    
       gameMusic.currentTime = 0  
-      enemies = []; //Resetear enemigos
-      //score = 0; //Resetear el score
-      spawnTimer = initialSpawnTimer; //Velocidad original
-      gameSpeed = 3; //La velocidad original
+      enemies = []; //Reset enemies
+      //score = 0; //Reset score
+      spawnTimer = initialSpawnTimer; //return to the normal spawn time
+      gameSpeed = 3; //The original speed
       isGameOver = true
       gameOver();
       
@@ -391,7 +377,7 @@ for (let i = 0; i < enemies.length; i ++) {
 
   player.animation();
 
-  gameSpeed += 0.010; // Increase every frame hasta llegar a 60 del spawnTimer
+  gameSpeed += 0.005; // Increase every frame hasta llegar al infinito
 
   score ++;
   scoreText.text = "Score: " + score;
