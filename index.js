@@ -238,7 +238,7 @@ function startGame(){
   highscore = 0; 
 
   //DATOS DEL JUGADOR
-  player = new Player(50, canvas.height, 60, 80, "#4a823e");
+  player = new Player(50, canvas.height, 60, 90, "#4a823e");
 
   //DATOS DE LOS STATISTICS. Score and Highscore
   scoreText = new Statistics("Score: " + score, 25, 25, "left", "#bababa", "30")
@@ -270,7 +270,7 @@ function gameOver(){
 
   <h2 class= "quote"><em>"I like my zombies slow and I like my zombies stupid"</em></h2>
   <h3 class="author">Seth Grahame-Smith</h3>
-  <h3 class="authorText"><em>Author of Pride and Prejudice and Zombies</em></h3>
+  <h3 class="authorText"><em>Author of Pride and Prejudice and Zombies<em></h3>
   </div>
   `;  
   body.appendChild(gameOverScreen) //Lo añado al body con append.child
@@ -299,7 +299,7 @@ function newGame() {
   
     //score = 0; //0 default
     //scoreText;
-    //highscore = 0; // 0 deault
+    highscore = 0; // 0 deault
     highscoreText;
     //player;
     gravity = 1; //1 default
@@ -364,7 +364,7 @@ for (let i = 0; i < enemies.length; i ++) {
 
   player.animation();
 
-  gameSpeed += 0.005; // Increase every frame hasta llegar a 60 del spawnTimer
+  gameSpeed += 0.010; // Increase every frame hasta llegar a 60 del spawnTimer
 
   score ++;
   scoreText.text = "Score: " + score;
