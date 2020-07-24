@@ -377,7 +377,7 @@ for (let i = 0; i < enemies.length; i ++) {
 
   player.animation();
 
-  gameSpeed += 0.005; // Increase every frame hasta llegar al infinito
+  gameSpeed += 0.020; // Increase every frame hasta llegar al infinito
 
   score ++;
   scoreText.text = "Score: " + score;
