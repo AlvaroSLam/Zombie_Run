@@ -250,7 +250,7 @@ function startGame(){
   highscore = 0; 
 
   //PLAYER DATA
-  player = new Player(50, canvas.height, 60, 90, "#4a823e");
+  player = new Player(120, canvas.height, 60, 90, "#4a823e");
 
   //DATOS DE LOS STATISTICS. Score and Highscore
   scoreText = new Statistics("Score: " + score, 25, 25, "left", "#bababa", "30")
